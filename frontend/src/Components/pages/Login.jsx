@@ -3,9 +3,10 @@ import { Container, Typography, TextField, Button, Box } from "@mui/material";
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-function Login() {
+function Login({setUser}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
     const nav = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -17,7 +18,9 @@ function Login() {
             email,
             password
           });
-          localStorage.setItem('token', res.data.token);
+          const data=localStorage.setItem('token', res.data.token);
+          console.log("Data>>>",res.data.name);
+          setUser(res.data.name);
           alert('Login successful!');
           nav('/');
         } catch (error) {

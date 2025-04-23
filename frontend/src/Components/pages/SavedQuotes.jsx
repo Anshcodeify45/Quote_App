@@ -16,7 +16,7 @@ function SavedQuotes() {
           if (!token) return alert('You must be logged in to view saved quotes.');
     
           try {
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/quotes/saved`, {
+            const res = await axios.get(`http://localhost:5000/api/quotes/saved`, {
               headers: {
                 Authorization: `Bearer ${token}`
               }

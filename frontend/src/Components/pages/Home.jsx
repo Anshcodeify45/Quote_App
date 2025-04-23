@@ -5,12 +5,19 @@ import QuoteCard from '../QuoteCard';
 import axios from 'axios';
 function Home() {
     const [quote, setQuote] = useState(null);
+    const [author, setAuthor] = useState("");
+
 
     const fetchQuote = async () => {
-      const res = await axios.get('http://localhost:5000/api/quotes/random');
-      setQuote(res.data);
+      try {
+        const res = await axios.get('http://localhost:5000/api/quotes/random');
+        setQuote(res.data.quote);
+        setAuthor(res.data.author); // res.data will be: { text: "...", author: "..." }
+      } catch (err) {
+        console.error("Error fetching quote:", err);
+        alert("Failed to fetch quote.");
+      }
     };
-    
     const saveQuote = async () => {
       const token = localStorage.getItem('token');
       if (!token) return alert('You must be logged in to save quotes.');
@@ -40,7 +47,7 @@ function Home() {
       </Typography>
 
       {quote ? (
-        <QuoteCard quote={quote.text} author={quote.author} />
+        <QuoteCard quote={quote} author={author} />
       ) : (
         <Box mt={2}>
           <CircularProgress />

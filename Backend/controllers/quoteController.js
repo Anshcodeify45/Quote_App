@@ -1,13 +1,19 @@
 const Quote = require('../model/Quote');
 const User = require('../model/User');
+const axios = require('axios');
 
 const getRandomQuote = async (req, res) => {
-  const count = await Quote.countDocuments();
-  const random = Math.floor(Math.random() * count);
-  const quote = await Quote.findOne().skip(random);
-  res.json(quote);
-};
+  try {
+    const response = await axios.get('https://zenquotes.io/api/random');
+    const quote = response.data[0].q;
+    const author = response.data[0].a;
 
+    res.json({ quote, author });
+  } catch (error) {
+    console.error('Error fetching quote:', error);
+    res.status(500).json({ message: 'Failed to fetch quote' });
+  }
+};
 const getSavedQuotes = async (req, res) => {
   const user = await User.findById(req.user.id);
   res.json(user.savedQuotes);
