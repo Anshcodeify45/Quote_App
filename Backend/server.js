@@ -11,7 +11,11 @@ const connectDB = require('./Database/connect');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://quote-app-soullines.onrender.com',  // ✅ Frontend URL
+    credentials: true,  // if you're using cookies or auth headers
+  }));
+  
 app.use(express.json());
 
 connectDB();
