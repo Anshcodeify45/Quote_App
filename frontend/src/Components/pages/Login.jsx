@@ -23,7 +23,7 @@ function Login({ setUser, setIsLoggedIn }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('https://quote-app-soullines.onrender.com/api/auth/login', {
+      const res = await axios.post('https://quote-app-vxr4.onrender.com/api/auth/login', {
         email,
         password,
       });
