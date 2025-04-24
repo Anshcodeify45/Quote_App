@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
-import { Container, Typography, TextField, Button, Box, Paper } from '@mui/material';
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Paper,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function Login({ setUser ,setIsLoggedIn}) {
+function Login({ setUser, setIsLoggedIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const nav = useNavigate();
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,19 +40,19 @@ function Login({ setUser ,setIsLoggedIn}) {
 
   return (
     <Container maxWidth="xs">
-      <Box mt={8} sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box mt={isSmallScreen ? 4 : 8} sx={{ display: 'flex', justifyContent: 'center' }}>
         <Paper
           elevation={3}
           sx={{
-            padding: 4,
+            padding: isSmallScreen ? 3 : 4,
             borderRadius: 2,
             width: '100%',
-            backgroundColor: '#333', // Dark background for the paper component
-            color: '#fff', // Light text color for contrast
+            backgroundColor: '#333',
+            color: '#fff',
           }}
         >
           <Typography
-            variant="h4"
+            variant={isSmallScreen ? 'h5' : 'h4'}
             align="center"
             gutterBottom
             sx={{ fontWeight: 'bold', color: '#fff' }}
@@ -54,13 +66,9 @@ function Login({ setUser ,setIsLoggedIn}) {
             onChange={(e) => setEmail(e.target.value)}
             sx={{
               borderRadius: 1,
-              backgroundColor: '#555', // Darker input background
-              '& .MuiInputBase-root': {
-                color: '#fff', // Light text in inputs
-              },
-              '& .MuiInputLabel-root': {
-                color: '#bbb', // Light label text
-              },
+              backgroundColor: '#555',
+              '& .MuiInputBase-root': { color: '#fff' },
+              '& .MuiInputLabel-root': { color: '#bbb' },
             }}
           />
           <TextField
@@ -72,12 +80,8 @@ function Login({ setUser ,setIsLoggedIn}) {
             sx={{
               borderRadius: 1,
               backgroundColor: '#555',
-              '& .MuiInputBase-root': {
-                color: '#fff',
-              },
-              '& .MuiInputLabel-root': {
-                color: '#bbb',
-              },
+              '& .MuiInputBase-root': { color: '#fff' },
+              '& .MuiInputLabel-root': { color: '#bbb' },
             }}
           />
           <Button
@@ -86,8 +90,9 @@ function Login({ setUser ,setIsLoggedIn}) {
             fullWidth
             sx={{
               mt: 2,
-              padding: '10px 0',
+              py: 1.2,
               fontWeight: 'bold',
+              fontSize: isSmallScreen ? '0.9rem' : '1rem',
               backgroundColor: '#1976d2',
               '&:hover': {
                 backgroundColor: '#1565c0',

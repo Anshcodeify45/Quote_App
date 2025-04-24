@@ -1,18 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import {
   Container,
   Typography,
   Box,
   Button,
-  CircularProgress
+  CircularProgress,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useEffect, useState } from 'react';
-import QuoteCard from '../QuoteCard';
 import axios from 'axios';
+import QuoteCard from '../QuoteCard';
 import Userquotecard from '../Userquotecard';
-
-
 
 const StyledContainer = styled(Container)`
   margin-top: 2rem;
@@ -47,116 +46,112 @@ const LoadingBox = styled(Box)`
   justify-content: center;
 `;
 
+function Home({ isLoggedIn }) {
+  const [quote, setQuote] = useState(null);
+  const [author, setAuthor] = useState("");
+  const [imageUrl, setImageUrl] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [userQuotes, setUserQuotes] = useState([]);
 
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-
-
-function Home({isLoggedIn}) {
-    const [quote, setQuote] = useState(null);
-    const [author, setAuthor] = useState("");
-    const [imageUrl, setImageUrl] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [userQuotes, setUserQuotes] = useState([]);
-    
-    
-    const fetchQuote = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/quotes/random');
-        setQuote(res.data.quote);
-        setAuthor(res.data.author);
-        setImageUrl(res.data.imageUrl); // Setting the image URL fetched from the API
-        setLoading(false); // Setting loading to false after fetching is complete
-      } catch (err) {
-        console.error("Error fetching quote:", err);
-        alert("Failed to fetch quote.");
-        setLoading(false); // Ensure loading is set to false in case of error
-      }
-    };
-    const fetchUserQuotes = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/quotes/user');
-        setUserQuotes(res.data);
-      } catch (err) {
-        console.error("Error fetching user quotes:", err);
-      }
-    };
-
-
-
-
-    useEffect(() => {
-      fetchQuote(); // Call the async function
-      fetchUserQuotes(); //own quotes
-    }, []); 
-
-    if (loading) {
-      return
-      <StyledContainer>
-        <LoadingBox>
-          <CircularProgress color="success" />
-        </LoadingBox>
-      </StyledContainer>
+  const fetchQuote = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/quotes/random');
+      setQuote(res.data.quote);
+      setAuthor(res.data.author);
+      setImageUrl(res.data.imageUrl);
+    } catch (err) {
+      console.error("Error fetching quote:", err);
+      alert("Failed to fetch quote.");
+    } finally {
+      setLoading(false);
     }
-  
-    if (!isLoggedIn) {
-      return (
-        <Box
-            mt={8}
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Typography
-              variant="h5"
-              color="#bbb" // Light gray text for dark theme
-              sx={{
-                textAlign: 'center', // Center the text
-              }}
-            >
-              Please log in to view your quotes.
-            </Typography>
-          </Box>
+  };
 
-      );
+  const fetchUserQuotes = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/quotes/user');
+      setUserQuotes(res.data);
+    } catch (err) {
+      console.error("Error fetching user quotes:", err);
     }
- 
-  
+  };
+
+  useEffect(() => {
+    fetchQuote();
+    fetchUserQuotes();
+  }, []);
+
+  if (!isLoggedIn) {
+    return (
+      <Box
+        mt={isSmallScreen ? 6 : 10}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          px: 2,
+        }}
+      >
+        <Typography
+          variant={isSmallScreen ? "h6" : "h5"}
+          color="#bbb"
+          textAlign="center"
+        >
+          Please log in to view your quotes.
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
-    <StyledContainer>
+    <StyledContainer maxWidth="md">
       <Box>
-        <SectionTitle>Random Quote</SectionTitle>
+        <SectionTitle variant={isSmallScreen ? "h5" : "h4"}>
+          Random Quote
+        </SectionTitle>
 
-        {quote ? (
-          <QuoteCard quote={quote} author={author} imageUrl={imageUrl} />
-        ) : (
+        {loading ? (
           <LoadingBox>
             <CircularProgress color="success" />
           </LoadingBox>
+        ) : (
+          quote && (
+            <QuoteCard quote={quote} author={author} imageUrl={imageUrl} />
+          )
         )}
 
         <StyledButton
           onClick={fetchQuote}
           variant="contained"
           color="success"
+          sx={{
+            fontSize: isSmallScreen ? '0.9rem' : '1rem',
+            px: isSmallScreen ? 2 : 4,
+            py: 1,
+          }}
         >
           New Quote
         </StyledButton>
       </Box>
 
       <Box>
-        <SubSectionTitle>User Submitted Quotes</SubSectionTitle>
+        <SubSectionTitle variant={isSmallScreen ? "h6" : "h5"}>
+          User Submitted Quotes
+        </SubSectionTitle>
+
         {userQuotes.length > 0 ? (
-        userQuotes.map((q, idx) => (
-          <Userquotecard key={idx} quote={q.quote} author={q.author} />
-        ))
-      ) : (
-        <Typography color="#bbbbbb">No user quotes found.</Typography>
-      )}
+          userQuotes.map((q, idx) => (
+            <Userquotecard key={idx} quote={q.quote} author={q.author} />
+          ))
+        ) : (
+          <Typography color="#bbbbbb">No user quotes found.</Typography>
+        )}
       </Box>
     </StyledContainer>
-  )
+  );
 }
 
-export default Home
+export default Home;

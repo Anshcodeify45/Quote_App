@@ -8,6 +8,8 @@ import {
   Paper,
   Snackbar,
   Alert,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import axios from 'axios';
 
@@ -16,6 +18,9 @@ function SubmitQuote() {
   const [author, setAuthor] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [error, setError] = useState('');
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +38,7 @@ function SubmitQuote() {
       setQuote('');
       setAuthor('');
       setOpenSnackbar(true);
+      setError('');
     } catch (err) {
       setError('Failed to submit quote.');
     }
@@ -40,21 +46,21 @@ function SubmitQuote() {
 
   return (
     <Container maxWidth="sm">
-      <Box mt={8} sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box mt={isSmallScreen ? 4 : 8} sx={{ display: 'flex', justifyContent: 'center' }}>
         <Paper
           elevation={3}
           sx={{
-            p: 4,
+            p: isSmallScreen ? 2 : 4,
             width: '100%',
-            backgroundColor: '#333', // Dark background for the Paper
-            color: '#fff', // Light text color
+            backgroundColor: '#333',
+            color: '#fff',
             borderRadius: 2,
           }}
         >
           <Typography
-            variant="h5"
+            variant={isSmallScreen ? 'h6' : 'h5'}
             gutterBottom
-            sx={{ fontWeight: 'bold', color: '#fff' }}
+            sx={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}
           >
             Submit Your Quote
           </Typography>
@@ -64,18 +70,14 @@ function SubmitQuote() {
               label="Quote"
               variant="outlined"
               multiline
-              rows={3}
+              rows={isSmallScreen ? 2 : 3}
               value={quote}
               onChange={(e) => setQuote(e.target.value)}
               sx={{
                 mb: 3,
-                backgroundColor: '#555', // Dark input background
-                '& .MuiInputBase-root': {
-                  color: '#fff', // White text inside the input
-                },
-                '& .MuiInputLabel-root': {
-                  color: '#bbb', // Light label color
-                },
+                backgroundColor: '#555',
+                '& .MuiInputBase-root': { color: '#fff' },
+                '& .MuiInputLabel-root': { color: '#bbb' },
               }}
             />
             <TextField
@@ -87,16 +89,12 @@ function SubmitQuote() {
               sx={{
                 mb: 3,
                 backgroundColor: '#555',
-                '& .MuiInputBase-root': {
-                  color: '#fff',
-                },
-                '& .MuiInputLabel-root': {
-                  color: '#bbb',
-                },
+                '& .MuiInputBase-root': { color: '#fff' },
+                '& .MuiInputLabel-root': { color: '#bbb' },
               }}
             />
             {error && (
-              <Typography color="error" sx={{ mb: 2 }}>
+              <Typography color="error" sx={{ mb: 2, fontSize: '0.9rem' }}>
                 {error}
               </Typography>
             )}
@@ -106,10 +104,10 @@ function SubmitQuote() {
               type="submit"
               sx={{
                 width: '100%',
-                backgroundColor: '#1976d2', // Blue button color
-                '&:hover': {
-                  backgroundColor: '#1565c0', // Darker blue on hover
-                },
+                fontSize: isSmallScreen ? '0.9rem' : '1rem',
+                py: 1.2,
+                backgroundColor: '#1976d2',
+                '&:hover': { backgroundColor: '#1565c0' },
               }}
             >
               Submit
