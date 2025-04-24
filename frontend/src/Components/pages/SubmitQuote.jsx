@@ -31,7 +31,7 @@ function SubmitQuote() {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/quotes/submit', {
+      await axios.post('https://quote-app-soullines.onrender.com/api/quotes/submit', {
         quote,
         author,
       });

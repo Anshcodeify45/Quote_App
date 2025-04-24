@@ -58,7 +58,7 @@ function Home({ isLoggedIn }) {
 
   const fetchQuote = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/quotes/random');
+      const res = await axios.get('https://quote-app-soullines.onrender.com/api/quotes/random');
       setQuote(res.data.quote);
       setAuthor(res.data.author);
       setImageUrl(res.data.imageUrl);
@@ -72,7 +72,7 @@ function Home({ isLoggedIn }) {
 
   const fetchUserQuotes = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/quotes/user');
+      const res = await axios.get('https://quote-app-soullines.onrender.com/api/quotes/user');
       setUserQuotes(res.data);
     } catch (err) {
       console.error("Error fetching user quotes:", err);
